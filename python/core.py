@@ -80,12 +80,10 @@ class Submission():
 
         if self.DATA_ROW_IN_TRANSIT:
             raise GetNextDataCalledTwiceException("get_next_data_as_numpy_array() can only be called once for every prediction made.")
-        try:
-            import numpy
-            return numpy.array(self.get_next_data_as_list())
-        except ImportError as e:
-            raise NotInstalledPackageException('The package numpy is not installed.')
-    
+
+        import numpy
+        return numpy.array(self.get_next_data_as_list())
+
     def submit_prediction(self, prediction):
         """
         Submits your prediction to standard output
