@@ -83,7 +83,7 @@ class Submission():
         try:
             import numpy
             return numpy.array(self.get_next_data_as_list())
-        except:
+        except ImportError as e:
             raise NotInstalledPackageException('The package numpy is not installed.')
     
     def submit_prediction(self, prediction):
