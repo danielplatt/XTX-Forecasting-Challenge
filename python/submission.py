@@ -1,5 +1,7 @@
-import subprocess
+import subprocess, sys, os
 from core import Submission
+
+sys.stdout = open(os.devnull, 'w')  # do NOT remove this code, place logic & imports below this line
 
 """
 PYTHON submission
