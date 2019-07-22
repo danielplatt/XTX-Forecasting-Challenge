@@ -1,6 +1,8 @@
 #!/usr/bin/Rscript
 source("core.r")
 
+init()  # do NOT remove this code, place logic & imports below this line
+
 # R submission
 #
 # Implement the model below
@@ -69,9 +71,6 @@ source("core.r")
 
 input <- file('stdin')
 open(input, 'rb')
-
-# Do not remove this method
-init()
 
 # get_prediction(data) expects a row of data from data.csv as input and should return a float that represents a
 #     prediction for the supplied row of data 
