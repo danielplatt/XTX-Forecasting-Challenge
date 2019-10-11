@@ -3,6 +3,11 @@ from core import Submission
 
 sys.stdout = open(os.devnull, 'w')  # do NOT remove this code, place logic & imports below this line
 
+import numpy
+import pickle
+from sklearn.ensemble import RandomForestRegressor
+import pandas as pd
+
 """
 PYTHON submission
 
@@ -55,10 +60,30 @@ class MySubmission(Submission):
        prediction for the supplied row of data
     """
     def get_prediction(self, data):
-        x = [float(x) if x else 0 for x in data.split(',')]
-        bidSize0 = x[45]
-        askSize0 = x[15]
-        return 0.0025 * (bidSize0 - askSize0)
+
+        maxaskRate = numpy.nanmax(data[0:15])
+        minaskRate = numpy.nanmin(data[0:15])
+        maxbidRate = numpy.nanmax(data[30:45])
+        minbidRate = numpy.nanmin(data[30:45])
+
+        data = numpy.nan_to_num(data)
+
+        askBidRatio = minaskRate/maxbidRate
+        totalaskSize = numpy.sum(data[15:30])
+        totalbidSize = numpy.sum(data[45:60])
+
+        askNotEqualZero = numpy.count_nonzero(data[0:15])
+        avgaskRate = numpy.sum(data[0:15]*data[15:30])/askNotEqualZero
+        bidNotEqualZero = numpy.count_nonzero(data[30:45])
+        avgbidRate = numpy.sum(data[30:45]*data[45:60])/bidNotEqualZero
+
+        data = numpy.append(data[0:60],numpy.array([maxaskRate,minaskRate,maxbidRate,minbidRate,askBidRatio,totalaskSize,totalbidSize,avgaskRate,avgbidRate]))
+
+        x = data
+        x = x.reshape(1, -1)
+
+        y = self.model.predict(x)
+        return y[0]
 
     """
     run_submission() will iteratively fetch the next row of data in the format 
@@ -69,6 +94,10 @@ class MySubmission(Submission):
 
         self.debug_print("Use the print function `self.debug_print(...)` for debugging purposes, do NOT use the default `print(...)`")
 
+        f = open('forest-regressor-10x7.pckl', 'rb')
+        self.model = pickle.load(f, encoding='latin1')
+        f.close()
+
         while(True):
             """
             NOTE: Only one of (get_next_data_as_string, get_next_data_as_list, get_next_data_as_numpy_array) can be used
@@ -78,8 +107,8 @@ class MySubmission(Submission):
             """
 
             # data = self.get_next_data_as_list()
-            # data = self.get_next_data_as_numpy_array()
-            data = self.get_next_data_as_string()
+            data = self.get_next_data_as_numpy_array() # for random tree
+            #data = self.get_next_data_as_string() # for xgboost
 
             prediction = self.get_prediction(data)
 
