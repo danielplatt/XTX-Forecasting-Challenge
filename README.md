@@ -30,5 +30,5 @@ The files can be run using Python and will load submission.py to make some test 
 ### Score of the Solution
 
 The solution achieved an R2 score of 0.01781 on the test set.
-The benchmark model achieve 0.03181 on the test set.
+The benchmark model achieved 0.03181 on the test set.
 The solution placed top 100 among 3888 submissions but did not win any prize.
